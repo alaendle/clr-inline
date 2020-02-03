@@ -1,5 +1,6 @@
 {-# LANGUAGE DataKinds #-}
 {-# LANGUAGE QuasiQuotes #-}
+{-# LANGUAGE StaticPointers #-}
 module Clr.Inline.IEnumerable where
 
 import Clr.Inline
