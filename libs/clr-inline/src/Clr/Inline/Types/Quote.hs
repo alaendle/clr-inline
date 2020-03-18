@@ -49,7 +49,6 @@ instance Quotable "word64"         "System.UInt64"  Word64      Word64
 instance Quotable "string"         "System.String"  BStr        String
 instance Quotable "text"           "System.String"  TextBStr    Text
 instance Quotable "void"           "System.Void"    ()          ()
-instance Quotable "unit" "Microsoft.FSharp.Core.Unit" ()        ()
 -- | All reference types are handled by this instance.
 instance Quotable a                a                (ClrPtr a)  (Clr a)
 

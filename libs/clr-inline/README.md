@@ -19,35 +19,6 @@ on top of [clr-host][clr-host] and [clr-marshal][clr-marshal] packages.
 [inline-r]: http://hackage.haskell.org/package/inline-r
 [inline-c]: http://hackage.haskell.org/package/inline-c
 
-Example
-==========
-
-Graphical hello world using F# Winforms:
-
-```haskell
-{-# LANGUAGE ScopedTypeVariables #-}
-{-# LANGUAGE DataKinds #-}
-{-# LANGUAGE QuasiQuotes #-}
-{-# LANGUAGE TemplateHaskell #-}
-module Main where
-
-import Clr.Inline
-
-[fsharp|
-  open System.Windows.Forms
-       |]
-
-main = do
-  startClr
-  let text = "Hello from Haskell"
-  [fsharp|
-        let form = new Form(Text=$text:string)
-        let button = new Button(Text="Click Me!", Dock=DockStyle.Fill)
-        button.Click.Add(fun _ -> MessageBox.Show($text, "Hey!") |> ignore)
-        form.Controls.Add(button)
-        Application.Run(form)
-         |]
-```
 Features
 ==========
 * Inline F# / C# in Haskell.
@@ -89,24 +60,6 @@ the quasiquoter as configuration. Configuration creates a new quasiquoter;
 since GHC does not allow calling a quasiquoter from the same module where it is
 defined, the recommended practice is to configure the quasiquoters in a 
 dedicated Config module. Example configuration for WPF dependencies:
-
-```haskell
-module WpfDeps where
-
-import Clr.Inline
-import Clr.Inline.Config
-
-wpf =
-  fsharp' $
-    defaultConfig
-    { configDependencies =
-        [ "System.Xaml"
-        , "WindowsBase"
-        , "PresentationCore"
-        , "PresentationFramework"
-        ]
-    }
-```
 
 
 LICENSE

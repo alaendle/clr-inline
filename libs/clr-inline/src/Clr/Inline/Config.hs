@@ -3,8 +3,7 @@ module Clr.Inline.Config where
 import Clr.Host.Config
 
 data ClrInlineConfig = ClrInlineConfig
-  { configFSharpPath :: FilePath
-  , configCSharpPath :: FilePath
+  { configCSharpPath :: FilePath
   , configDependencies :: [String]
   , configExtraIncludeDirs :: [FilePath]
   , configDebugSymbols :: Bool
@@ -12,8 +11,8 @@ data ClrInlineConfig = ClrInlineConfig
   }
 
 defaultMonoConfig, defaultDotNetConfig, defaultConfig :: ClrInlineConfig
-defaultMonoConfig = ClrInlineConfig "fsharpc" "mcs" [] [] False []
-defaultDotNetConfig  = ClrInlineConfig "fsc" "csc" [] [] False []
+defaultMonoConfig = ClrInlineConfig "mcs" [] [] False []
+defaultDotNetConfig  = ClrInlineConfig "csc" [] [] False []
 defaultConfig = case defaultHostConfig of
                   ClrHostConfig ClrHostMono -> defaultMonoConfig
                   ClrHostConfig ClrHostDotNet -> defaultDotNetConfig

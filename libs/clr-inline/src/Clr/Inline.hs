@@ -1,8 +1,6 @@
 module Clr.Inline
   ( csharp
   , csharp'
-  , fsharp
-  , fsharp'
   , startClr
   , GCHandle(..)
   , Quotable
@@ -15,7 +13,6 @@ module Clr.Inline
   )where
 
 import           Clr.CSharp.Inline
-import           Clr.FSharp.Inline
 import           Clr.Host
 import           Clr.Host.BStr
 import           Clr.Host.GCHandle

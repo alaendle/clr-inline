@@ -42,8 +42,6 @@ import           Text.Printf
 --                 }|]
 -- @
 --
---   See the documentation for 'fsharp' for details on the quotation
---   and antiquotation syntaxes.
 --  This quasiquoter is implicitly configured with the 'defaultConfig'.
 csharp :: QuasiQuoter
 csharp = csharp' defaultConfig
