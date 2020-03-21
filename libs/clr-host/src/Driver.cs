@@ -1092,7 +1092,7 @@ namespace Salsa
         public static Type StringToType(string s)
         {
             Type t = Type.GetType(s);
-            t = t ?? Type.GetType(s,(assName => GetLoadedAssembly(assName)), ((ass, tn, ci) => ass==null ? null : ass.GetType(tn,ci)), true);
+            t = t ?? Type.GetType(s,(assName => { assName.Version = new Version(1, 0, 0, 0); return GetLoadedAssembly(assName); }), ((ass, tn, ci) => ass==null ? null : ass.GetType(tn,ci)), true);
             if(t == null)
                 throw new ArgumentException("Type not in scope: " + s);
             return t;

@@ -55,7 +55,6 @@ benchmarks:
   benchmark:
     main: Main.hs
     ghc-options: -main-is Bench.main
-    main-is: Bench.main
     source-dirs: bench
     dependencies:
     - base

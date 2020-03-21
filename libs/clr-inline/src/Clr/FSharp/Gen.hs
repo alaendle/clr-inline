@@ -72,19 +72,21 @@ compile ClrInlineConfig {..} m@ClrInlinedGroup {..} = do
   let ass = getAssemblyName name mod
   dir <- createTempDirectory temp "inline-fsharp"
   let src = dir </> ass <.> ".fs"
+      proj = dir </> ass <.> ".fsproj"
       tgt = dir </> ass <.> ".dll"
   writeFile src (genCode m)
+  writeFile proj ("<Project Sdk=\"Microsoft.NET.Sdk\"><PropertyGroup><TargetFramework>netstandard2.0</TargetFramework></PropertyGroup><ItemGroup><Compile Include=\"" <> ass <> ".fs\"/></ItemGroup></Project>")
   callCommand $
     unwords $
     execWriter $ do
       yield configFSharpPath
+      yield "build"
       yield "--nologo"
-      yield "--target:library"
-      yield $ "--out:" ++ tgt
-      when configDebugSymbols $ yield "--debug:embedded"
-      forM_ configExtraIncludeDirs $ \dir -> yield $ "--lib:" ++ dir
-      forM_ configDependencies $ \name -> yield $ "--reference:" ++ name
+      yield $ "--output " <> dir
+      when (not configDebugSymbols) $ yield "--configuration Release"
+      --forM_ configExtraIncludeDirs $ \dir -> yield $ "--lib:" ++ dir
+      --forM_ configDependencies $ \name -> yield $ "--reference:" ++ name
       yieldAll configCustomCompilerFlags
-      yield src
+      yield proj
   bcode <- BS.readFile tgt
   return $ ClrBytecode bcode

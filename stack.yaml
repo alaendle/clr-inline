@@ -1,4 +1,4 @@
-resolver: nightly-2017-07-31
+resolver: lts-14.22
 packages:
 - 'libs/clr-typed/'
 - 'libs/clr-host/'
@@ -6,7 +6,6 @@ packages:
 - 'libs/clr-import-gen/'
 - 'libs/clr-inline/'
 - 'libs/clr-marshal/'
-- 'examples/clr-typed-demo/'
 - 'examples/clr-inline-demo/'
 - 'utils/clr-win-linker/'
 

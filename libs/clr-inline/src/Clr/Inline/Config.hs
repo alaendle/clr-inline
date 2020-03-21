@@ -12,8 +12,8 @@ data ClrInlineConfig = ClrInlineConfig
   }
 
 defaultMonoConfig, defaultDotNetConfig, defaultConfig :: ClrInlineConfig
-defaultMonoConfig = ClrInlineConfig "fsharpc" "mcs" [] [] False []
-defaultDotNetConfig  = ClrInlineConfig "fsc" "csc" [] [] False []
+defaultMonoConfig = ClrInlineConfig "dotnet" "dotnet" [] [] False []
+defaultDotNetConfig  = ClrInlineConfig "dotnet" "dotnet" [] [] False []
 defaultConfig = case defaultHostConfig of
                   ClrHostConfig ClrHostMono -> defaultMonoConfig
                   ClrHostConfig ClrHostDotNet -> defaultDotNetConfig
