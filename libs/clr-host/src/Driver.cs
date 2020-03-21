@@ -39,11 +39,11 @@ namespace Salsa
             //Console.WriteLine("Using Salsa.dll (version {0})",
             //    Assembly.GetExecutingAssembly().GetName().Version);
 
-            Trace.Listeners.Add(new ConsoleTraceListener());
+            //Trace.Listeners.Add(new ConsoleTraceListener());
 
-            _assemblyBuilder = AppDomain.CurrentDomain.DefineDynamicAssembly(
-                new AssemblyName("DynamicAssembly"), AssemblyBuilderAccess.RunAndSave);
-            _dynamicModuleBuilder = _assemblyBuilder.DefineDynamicModule("DynamicModule", "Dynamic.dll");
+            _assemblyBuilder = AssemblyBuilder.DefineDynamicAssembly(
+                new AssemblyName("DynamicAssembly"), AssemblyBuilderAccess.Run);
+            _dynamicModuleBuilder = _assemblyBuilder.DefineDynamicModule("DynamicModule");
             _stubsTypeBuilder = _dynamicModuleBuilder.DefineType("Stubs");
         }
 
@@ -112,7 +112,7 @@ namespace Salsa
 
             string fileName = Path.GetFileName(_dynamicModuleBuilder.FullyQualifiedName);
             Console.WriteLine("Saving dynamic assembly: " + fileName);
-            _assemblyBuilder.Save(fileName);
+            //_assemblyBuilder.Save(fileName);
         }
 
         /// <summary>
@@ -1071,7 +1071,7 @@ namespace Salsa
         public static Assembly LoadAssemblyFromBytes(IntPtr ptr, int len) {
             byte[] bytes = new byte[len];
             Marshal.Copy(ptr,bytes,0,len);
-            Assembly res = System.Reflection.Assembly.Load(bytes, null, System.Security.SecurityContextSource.CurrentAppDomain);
+            Assembly res = System.Reflection.Assembly.Load(bytes);
             LoadedAssemblies.Add(res.GetName().FullName, res);
             return res;
         }
@@ -1085,16 +1085,17 @@ namespace Salsa
                 System.Console.ReadLine();
                 System.Diagnostics.Debugger.Break();
                 throw new ArgumentException("GetLoadedAssembly: " + assName.FullName,
-                                            "Known assemblies: " + String.Join(",", LoadedAssemblies.Select(kv => kv.Key)) + "\n"+
+                                            "Known assemblies:\n" + String.Join("\n", LoadedAssemblies.Select(kv => kv.Key)) + "\n"+
                                             "In GHC 8.2.1 the StaticPointers extension must be enabled in modules with clr inlined blocks and the module exports unrestricted");
             }
         }
         public static Type StringToType(string s)
         {
+            System.Console.WriteLine("Load type: " + s);
             Type t = Type.GetType(s);
-            t = t ?? Type.GetType(s,(assName => { assName.Version = new Version(1, 0, 0, 0); return GetLoadedAssembly(assName); }), ((ass, tn, ci) => ass==null ? null : ass.GetType(tn,ci)), true);
+            t = t ?? Type.GetType(s,(assName => { assName.Version = new Version(1, 0, 0, 0); return GetLoadedAssembly(assName); }), ((ass, tn, ci) => ass==null ? null :  ass.GetTypes().SingleOrDefault(_ => _.FullName == tn)));
             if(t == null)
-                throw new ArgumentException("Type not in scope: " + s);
+                throw new ArgumentException("Type not in scope: " + s + "\nKnown assemblies:\n" + String.Join("\n", LoadedAssemblies.Select(kv => kv.Key)));
             return t;
         }
 

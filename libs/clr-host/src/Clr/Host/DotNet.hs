@@ -11,7 +11,6 @@ import Foreign.Ptr
 import Foreign.Marshal
 import Foreign.C.String
 import Foreign.Storable
-import System.Win32
 import System.IO
 import Control.Exception (bracket)
 import Unsafe.Coerce (unsafeCoerce)

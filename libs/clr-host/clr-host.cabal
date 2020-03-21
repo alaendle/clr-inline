@@ -14,21 +14,13 @@ maintainer:          Nikos Baxevanis <nikos.baxevanis@gmail.com>
 copyright:           2016-2017 Tim Matthews
 category:            Language, FFI, CLR, .NET
 build-type:          Custom
-extra-source-files:  src/Driver.cs, CHANGELOG.md
+extra-source-files:  src/Driver.cs, src/Driver.csproj, CHANGELOG.md
 extra-tmp-files:     src/Driver.dll
 cabal-version:       1.24
 
 source-repository head
     type:            git
     location:        https://gitlab.com/tim-m89/clr-haskell/tree/master/libs/clr-host
-
-flag enable_dotnet
-  description: build with .Net support
-  default: False
-
-flag enable_mono
-  description: build with mono support
-  default: False
 
 -- Deps for running the setup itself (compilation of the C# code).
 custom-setup
@@ -55,46 +47,13 @@ library
                      , text
                      , file-embed
                      , clr-marshal
-  -- Windows extra build deps
-  if os(windows)
-    build-depends:       Win32
   -- .Net specific options
-  if flag(enable_dotnet)
-    Cpp-options:         -DHAVE_DOTNET
-    cc-options:          -DHAVE_DOTNET
-    other-modules:       Clr.Host.BStr.DotNet
-                       , Clr.Host.DotNet
-                       , Clr.Host.DotNet.Common
-                       , Clr.Host.DotNet.Guid
-                       , Clr.Host.DotNet.SafeArray
-                       , Clr.Host.DotNet.Variant
-    Extra-Libraries:     oleaut32, ole32
-  -- Mono specific options
-  if flag(enable_mono)
-    Cpp-options:         -DHAVE_MONO
-    cc-options:          -DHAVE_MONO
-    other-modules:       Clr.Host.BStr.Mono
-                       , Clr.Host.Mono
-    Extra-Libraries:     glib-2.0, mono-2.0
-  -- If neither .Net / Mono chosen, default to .Net on Windows and Mono otherwise.
-  if !flag(enable_dotnet) && !flag(enable_mono)
-    if os(windows)
-      Cpp-options:         -DHAVE_DOTNET
-      cc-options:          -DHAVE_DOTNET
-      other-modules:       Clr.Host.BStr.DotNet
-                         , Clr.Host.DotNet
-                         , Clr.Host.DotNet.Common
-                         , Clr.Host.DotNet.Guid
-                         , Clr.Host.DotNet.SafeArray
-                         , Clr.Host.DotNet.Variant
-      Extra-Libraries:     oleaut32, ole32
-    else
-      Cpp-options:         -DHAVE_MONO
-      cc-options:          -DHAVE_MONO
-      other-modules:       Clr.Host.BStr.Mono
-                         , Clr.Host.Mono
-      Extra-Libraries:     glib-2.0, mono-2.0
-
+  other-modules:       Clr.Host.BStr.DotNet
+                     , Clr.Host.DotNet
+                     , Clr.Host.DotNet.Common
+                     , Clr.Host.DotNet.Guid
+                     , Clr.Host.DotNet.SafeArray
+                     , Clr.Host.DotNet.Variant
 
 test-suite clr-host-test
   type:                exitcode-stdio-1.0

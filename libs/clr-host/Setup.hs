@@ -21,8 +21,8 @@ buildClrHost pd lbi hooks bflags = do
   let progDb = withPrograms lbi
   currentDir <- getCurrentDirectory
   let src = currentDir </> "src" </> "Driver.cs"
-  let out = currentDir </> "src" </> "Driver.dll"
-  runDbProgram verbosity csharpCompiler progDb ["-filealign:512", "-optimize+", "-out:" ++ out, "-target:library", src]
+  let proj = currentDir </> "src" </> "Driver.csproj"
+  runDbProgram verbosity csharpCompiler progDb ["build", "--nologo", "--configuration", "Release", "--output", currentDir </> "src", proj]
   buildHook simpleUserHooks pd lbi hooks bflags
 
 configureClrHost :: (GenericPackageDescription, HookedBuildInfo) -> ConfigFlags -> IO LocalBuildInfo
@@ -34,11 +34,9 @@ configureClrHost (gpd,hbi) cf = do
   return lbi'
 
 cscFindLocation :: Verbosity -> ProgramSearchPath -> IO (Maybe (FilePath, [FilePath]))
-cscFindLocation verb path = runMaybeT $ findExec "mcs"
-                                    <|> findExec "csc"
-                                    <|> findExec "C:\\Windows\\Microsoft.NET\\Framework64\\v4.0.30319\\csc"
+cscFindLocation verb path = runMaybeT $ findExec "dotnet"
                           where findExec name = MaybeT $ findProgramOnSearchPath verb path name
 
 csharpCompiler :: Program
-csharpCompiler = (simpleProgram "csc") { programFindLocation = cscFindLocation }
+csharpCompiler = (simpleProgram "dotnet") { programFindLocation = cscFindLocation }
 

@@ -1,4 +1,6 @@
 .stack-work/
+obj/
 *.swp
+*.pdb
 libs/clr-host/src/Driver.dll
 stack.yaml.lock

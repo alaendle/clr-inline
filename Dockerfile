@@ -1,4 +1,9 @@
-FROM fpco/stack-build:lts-14.22 as build
+FROM ubuntu:bionic as build
+
+# install stack
+RUN apt-get update && \
+    apt-get install -y wget && \
+    wget -qO- https://get.haskellstack.org/ | sh
 
 # Prerequisites
 RUN wget -q https://packages.microsoft.com/config/ubuntu/18.04/packages-microsoft-prod.deb -O packages-microsoft-prod.deb && \
@@ -10,7 +15,8 @@ RUN wget -q https://packages.microsoft.com/config/ubuntu/18.04/packages-microsof
     rm -rf /var/lib/apt/lists/*
 
 # CACHE!
-RUN stack update --system-ghc
+RUN stack update  --resolver lts-14.22
+RUN stack setup  --resolver lts-14.22
 COPY stack.yaml .
 COPY libs/clr-typed/*.cabal libs/clr-typed/
 COPY libs/clr-host/*.cabal libs/clr-host/
@@ -20,9 +26,10 @@ COPY libs/clr-inline/*.cabal libs/clr-inline/
 COPY libs/clr-marshal/*.cabal libs/clr-marshal/
 COPY examples/clr-inline-demo/*.cabal examples/clr-inline-demo/
 COPY utils/clr-win-linker/*.cabal utils/clr-win-linker/
-RUN stack build --copy-bins --only-dependencies --system-ghc
+RUN stack build --copy-bins --only-dependencies
 
 # Build (& maybe later test -- then also cache --test dependencies)
 COPY . .
-RUN stack build --system-ghc
-RUN stack exec winforms --system-ghc
+RUN stack clean
+RUN stack build
+RUN stack exec winforms
